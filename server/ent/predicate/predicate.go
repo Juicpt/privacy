@@ -14,3 +14,6 @@ type QQModel func(*sql.Selector)
 
 // SFModel is the predicate function for sfmodel builders.
 type SFModel func(*sql.Selector)
+
+// WBModel is the predicate function for wbmodel builders.
+type WBModel func(*sql.Selector)

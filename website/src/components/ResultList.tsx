@@ -46,6 +46,7 @@ function Result(props: ResultProps) {
                                         props.result.phone_numbers.length === 0 &&
                                         props.result.id_numbers.length === 0 &&
                                         props.result.qq_numbers.length === 0 &&
+                                        props.result.wb_uids.length === 0 &&
                                         props.result.passwords.length === 0 &&
                                         props.result.emails.length === 0 &&
                                         props.result.addresses.length === 0
@@ -133,6 +134,20 @@ function Result(props: ResultProps) {
                                                 </ListItemIcon>
                                                 <ListItemText primaryTypographyProps={{style: {wordWrap: "break-word"}}}
                                                               primary={qqNumber}/>
+                                            </ListItem>
+                                        </ListItem>
+                                    )
+                                }
+                                {
+                                    props.result.wb_uids.map((wbUid, index) =>
+                                        <ListItem disableGutters key={index}>
+                                            <ListItem>
+                                                <ListItemIcon>
+                                                    <SvgIcon>
+                                                        <g transform="translate(0.000000,16.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none"><path d="M123 133 c9 -2 17 -9 17 -14 0 -6 -5 -7 -10 -4 -6 4 -18 1 -27 -7 -13 -10 -17 -10 -20 0 -11 32 -83 -14 -83 -54 0 -25 47 -47 84 -40 51 10 64 30 42 67 -9 16 -12 29 -7 29 6 0 11 -6 11 -12 0 -9 3 -9 9 1 7 11 10 10 14 -5 4 -17 5 -17 6 2 1 24 -17 44 -38 43 -12 -1 -12 -2 2 -6z"/></g>
+                                                    </SvgIcon>
+                                                </ListItemIcon>
+                                                <ListItemText primary={wbUid}/>
                                             </ListItem>
                                         </ListItem>
                                     )

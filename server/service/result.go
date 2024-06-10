@@ -9,6 +9,7 @@ type Result interface {
 	queryPhoneNumber(databases []database.Database, phoneNumber int64) error
 	queryIDNumber(databases []database.Database, idNumber string) error
 	queryQQNumber(databases []database.Database, qqNumber int64) error
+	queryWBNumber(databases []database.Database, wbNumber int64) error
 	queryEmail(databases []database.Database, email string) error
 
 	addName(name string)
@@ -16,6 +17,7 @@ type Result interface {
 	addPhoneNumber(phoneNumber int64)
 	addIDNumber(idNumber string)
 	addQQNumber(qqNumber int64)
+	addWBNumber(wbNumber int64)
 	addPassword(password string)
 	addEmail(email string)
 	addAddress(address string)
@@ -31,6 +33,7 @@ type QueryResult struct {
 	PhoneNumbers map[PhoneNumber]bool `json:"phone_numbers"`
 	IDNumbers    map[IDNumber]bool    `json:"id_numbers"`
 	QQNumbers    map[QQNumber]bool    `json:"qq_numbers"`
+	WBNumbers    map[WBNumber]bool    `json:"wb_uids"`
 	Passwords    map[Password]bool    `json:"passwords"`
 	Emails       map[Email]bool       `json:"emails"`
 	Addresses    map[Address]bool     `json:"addresses"`
@@ -43,6 +46,7 @@ func NewQueryResult() *QueryResult {
 		PhoneNumbers: make(map[PhoneNumber]bool),
 		IDNumbers:    make(map[IDNumber]bool),
 		QQNumbers:    make(map[QQNumber]bool),
+		WBNumbers:    make(map[WBNumber]bool),
 		Passwords:    make(map[Password]bool),
 		Emails:       make(map[Email]bool),
 		Addresses:    make(map[Address]bool),
@@ -64,6 +68,9 @@ func (result *QueryResult) addModel(model database.Model) {
 	}
 	if qqNumber, valid := model.GetQQNumber(); valid {
 		result.addQQNumber(qqNumber)
+	}
+	if wbNumber, valid := model.GetWBNumber(); valid {
+		result.addWBNumber(wbNumber)
 	}
 	if password, valid := model.GetPassword(); valid {
 		result.addPassword(password)
@@ -115,6 +122,20 @@ func (result *QueryResult) queryQQNumber(databases []database.Database, qqNumber
 		}
 	}
 	result.QQNumbers[QQNumber(qqNumber)] = true
+	return nil
+}
+
+func (result *QueryResult) queryWBNumber(databases []database.Database, wbNumber int64) error {
+	for _, db := range databases {
+		models, err := db.QueryByWBNumber(context.Background(), wbNumber)
+		if err != nil {
+			return err
+		}
+		for _, model := range models {
+			result.addModel(model)
+		}
+	}
+	result.WBNumbers[WBNumber(wbNumber)] = true
 	return nil
 }
 
@@ -179,6 +200,16 @@ func (result *QueryResult) addQQNumber(value int64) {
 	qqNumber := QQNumber(value)
 	if _, ok := result.QQNumbers[qqNumber]; !ok {
 		result.QQNumbers[qqNumber] = false
+	}
+}
+
+func (result *QueryResult) addWBNumber(value int64) {
+	if value == 0 {
+		return
+	}
+	wbNumber := WBNumber(value)
+	if _, ok := result.WBNumbers[wbNumber]; !ok {
+		result.WBNumbers[wbNumber] = false
 	}
 }
 
@@ -248,6 +279,13 @@ func (result *QueryResult) Build(mask bool) *QueryResponse {
 			result = qqNumber.Masking()
 		}
 		response.QQNumbers = append(response.QQNumbers, result)
+	}
+	for wbNumber := range result.WBNumbers {
+		result := wbNumber.String()
+		if mask {
+			result = wbNumber.Masking()
+		}
+		response.WBNumbers = append(response.WBNumbers, result)
 	}
 	for password := range result.Passwords {
 		result := password.String()

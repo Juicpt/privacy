@@ -3,8 +3,8 @@ database:
   tables:
     qq: true
     jd: true
+    wb: true
     sf: false # Not support
-    wb: false # Not support
 
 http:
   host: 0.0.0.0

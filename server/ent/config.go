@@ -27,6 +27,7 @@ type hooks struct {
 	JDModel []ent.Hook
 	QQModel []ent.Hook
 	SFModel []ent.Hook
+	WBModel []ent.Hook
 }
 
 // Options applies the options on the config object.

@@ -52,11 +52,26 @@ var (
 		PrimaryKey:  []*schema.Column{SfColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
+	// WbColumns holds the columns for the "wb" table.
+	WbColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "uid", Type: field.TypeInt64},
+		{Name: "phone_number", Type: field.TypeInt64},
+	}
+	// QqTable holds the schema information for the "qq" table.
+	// WbTable holds the schema information for the "wb" table.
+	WbTable = &schema.Table{
+		Name:        "wb",
+		Columns:     WbColumns,
+		PrimaryKey:  []*schema.Column{QqColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		JdTable,
 		QqTable,
 		SfTable,
+		WbTable,
 	}
 )
 

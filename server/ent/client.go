@@ -12,6 +12,7 @@ import (
 	"github.com/kallydev/privacy/ent/jdmodel"
 	"github.com/kallydev/privacy/ent/qqmodel"
 	"github.com/kallydev/privacy/ent/sfmodel"
+	"github.com/kallydev/privacy/ent/wbmodel"
 
 	"github.com/facebook/ent/dialect"
 	"github.com/facebook/ent/dialect/sql"
@@ -28,6 +29,8 @@ type Client struct {
 	QQModel *QQModelClient
 	// SFModel is the client for interacting with the SFModel builders.
 	SFModel *SFModelClient
+	// SFModel is the client for interacting with the SFModel builders.
+	WBModel *WBModelClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -44,6 +47,7 @@ func (c *Client) init() {
 	c.JDModel = NewJDModelClient(c.config)
 	c.QQModel = NewQQModelClient(c.config)
 	c.SFModel = NewSFModelClient(c.config)
+	c.WBModel = NewWBModelClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -79,6 +83,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		JDModel: NewJDModelClient(cfg),
 		QQModel: NewQQModelClient(cfg),
 		SFModel: NewSFModelClient(cfg),
+		WBModel: NewWBModelClient(cfg),
 	}, nil
 }
 
@@ -97,6 +102,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		JDModel: NewJDModelClient(cfg),
 		QQModel: NewQQModelClient(cfg),
 		SFModel: NewSFModelClient(cfg),
+		WBModel: NewWBModelClient(cfg),
 	}, nil
 }
 
@@ -128,6 +134,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.JDModel.Use(hooks...)
 	c.QQModel.Use(hooks...)
 	c.SFModel.Use(hooks...)
+	c.WBModel.Use(hooks...)
 }
 
 // JDModelClient is a client for the JDModel schema.
@@ -392,4 +399,92 @@ func (c *SFModelClient) GetX(ctx context.Context, id int) *SFModel {
 // Hooks returns the client hooks.
 func (c *SFModelClient) Hooks() []Hook {
 	return c.hooks.SFModel
+}
+
+// WBModelClient is a client for the WBModel schema.
+type WBModelClient struct {
+	config
+}
+
+// NewWBModelClient returns a client for the WBModel from the given config.
+func NewWBModelClient(c config) *WBModelClient {
+	return &WBModelClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `wbmodel.Hooks(f(g(h())))`.
+func (c *WBModelClient) Use(hooks ...Hook) {
+	c.hooks.WBModel = append(c.hooks.WBModel, hooks...)
+}
+
+// Create returns a create builder for WBModel.
+func (c *WBModelClient) Create() *WBModelCreate {
+	mutation := newWBModelMutation(c.config, OpCreate)
+	return &WBModelCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// BulkCreate returns a builder for creating a bulk of WBModel entities.
+func (c *WBModelClient) CreateBulk(builders ...*WBModelCreate) *WBModelCreateBulk {
+	return &WBModelCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for WBModel.
+func (c *WBModelClient) Update() *WBModelUpdate {
+	mutation := newWBModelMutation(c.config, OpUpdate)
+	return &WBModelUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *WBModelClient) UpdateOne(wm *WBModel) *WBModelUpdateOne {
+	mutation := newWBModelMutation(c.config, OpUpdateOne, withWBModel(wm))
+	return &WBModelUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *WBModelClient) UpdateOneID(id int) *WBModelUpdateOne {
+	mutation := newWBModelMutation(c.config, OpUpdateOne, withWBModelID(id))
+	return &WBModelUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for WBModel.
+func (c *WBModelClient) Delete() *WBModelDelete {
+	mutation := newWBModelMutation(c.config, OpDelete)
+	return &WBModelDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *WBModelClient) DeleteOne(wm *WBModel) *WBModelDeleteOne {
+	return c.DeleteOneID(wm.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *WBModelClient) DeleteOneID(id int) *WBModelDeleteOne {
+	builder := c.Delete().Where(wbmodel.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &WBModelDeleteOne{builder}
+}
+
+// Query returns a query builder for WBModel.
+func (c *WBModelClient) Query() *WBModelQuery {
+	return &WBModelQuery{config: c.config}
+}
+
+// Get returns a WBModel entity by its id.
+func (c *WBModelClient) Get(ctx context.Context, id int) (*WBModel, error) {
+	return c.Query().Where(wbmodel.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *WBModelClient) GetX(ctx context.Context, id int) *WBModel {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *WBModelClient) Hooks() []Hook {
+	return c.hooks.WBModel
 }

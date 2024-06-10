@@ -4,7 +4,8 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/kallydev/privacy?style=flat-square)
 ![GitHub license](https://img.shields.io/github/license/kallydev/privacy?style=flat-square)
 
-个人数据泄漏检测网站，适用于近期流传的 40GB+ 数据。
+个人数据泄漏检测网站，适用于近期流传的 40GB+ 数据。  
+有人去进行所谓的警告前不妨考虑考虑怎么在个人信息安全这方面向用户交代，应该怎么应付索赔。
 
 > 所有数据均来源于互联网，仅用于查询个人信息泄露情况，请勿用于非法目的。
 
@@ -18,7 +19,7 @@
 
 ### 导入数据
 
-数据来源于近期流传的 40GB+ 的压缩包，目前已支持 QQ / JD / SF 的多表查询。
+数据来源于近期流传的 40GB+ 的压缩包，目前已支持 QQ / JD / WB 的多表查询。
 
 1. 创建 SQLite 数据库
 
@@ -63,13 +64,26 @@ CREATE TABLE sf
 );
 ```
 
-2. 导入 QQ 库
+```sql
+CREATE TABLE wb
+(
+    id           BIGINT,
+    uid    BIGINT,
+    phone_number INT
+);
+```
+
+2. 导入QQ库
 
 把 `6.9更新总库.txt` 文件放到项目根目录下，然后执行 `python scripts/qq.py`。
 
 3. 导入京东库
 
 把 `www_jd_com_12g.txt` 文件放到项目根目录下，然后执行 `python scripts/jd.py`。
+
+4. 导入微博库
+
+把 `微博5亿2019.txt` 文件放到项目根目录下，然后执行 `python scripts/wb.py`。
 
 - 创建索引
 
@@ -83,19 +97,20 @@ CREATE INDEX index_qq_phone_number ON qq (phone_number);
 CREATE INDEX index_jd_email ON jd (email);
 CREATE INDEX index_jd_id_number ON jd (id_number);
 CREATE INDEX index_jd_phone_number ON jd (phone_number);
+CREATE INDEX index_wb_uid ON wb (uid);
+CREATE INDEX index_wb_phone_number ON wb (phone_number);
 ```
 
-4. 导入顺丰库
+5. 导入顺丰库
 
-还没来得及写，欢迎 PR 或者等我明天再写。
+~~还没来得及写，欢迎 PR 或者等我明天再写。~~
+数据意义不大，不打算做支持。
 
 ### 编译代码
 
-1. 安装 Yarn
+~~1. 安装 Yarn~~
 
-```bash
-npm install -g yarn
-```
+~~npm install -g yarn~~
 
 2. 安装 Golang
 
@@ -112,11 +127,7 @@ git clone http://github.com/kallydev/privacy
 
 4. 编译前端
 
-```bash
-cd website
-yarn install
-yarn build
-```
+See [Readme](website/README.md)
 
 5. 编译后端
 
@@ -137,8 +148,8 @@ go build -o app main/main.go
 
 - [ ] 编译 Docker 镜像
 - [ ] 取模分表
-- [ ] 微博账号和手机号关联查询
-- [ ] 重构所有导入脚本以及编写微博和顺丰的导入脚本
+- [x] 微博账号和手机号关联查询
+- [ ] 重构所有导入脚本以及编写顺丰的导入脚本
 - [ ] 自动加载支持的数据表
 - [ ] 示例网站支持以上新的功能
 
@@ -165,7 +176,7 @@ go build -o app main/main.go
 
 ### 5. 为什么不提供数据库文件?
 
-众所周知传播这些数据属于违法行为，所以这个项目不提供相关数据。
+为什么提供数据库文件?
 
 ## License
 

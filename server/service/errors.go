@@ -33,6 +33,9 @@ func NewResponse(ctx echo.Context, err error, data interface{}) error {
 	if !ok {
 		code = 10000
 	}
+	if strings.Contains(strings.ToLower(err.Error()), "sql") {
+        err = errors.New("Internal processing errors.")
+    }
 	return ctx.JSONPretty(http.StatusOK, &Response{
 		Code:    code,
 		Message: strings.ToLower(err.Error()),

@@ -6,6 +6,7 @@ import (
 
 type Database interface {
 	QueryByQQNumber(ctx context.Context, qqNumber int64) ([]Model, error)
+	QueryByWBNumber(ctx context.Context, wbNumber int64) ([]Model, error)
 	QueryByEmail(ctx context.Context, email string) ([]Model, error)
 	QueryByIDNumber(ctx context.Context, idNumber string) ([]Model, error)
 	QueryByPhoneNumber(ctx context.Context, phoneNumber int64) ([]Model, error)
@@ -17,6 +18,7 @@ type Model interface {
 	GetPassword() (password string, valid bool)
 	GetEmail() (email string, valid bool)
 	GetQQNumber() (qqNumber int64, valid bool)
+	GetWBNumber() (wbNumber int64, valid bool)
 	GetIDNumber() (idNumber string, valid bool)
 	GetPhoneNumber() (phoneNumber int64, valid bool)
 	GetAddress() (address string, valid bool)

@@ -21,6 +21,10 @@ func (db *JDDatabase) QueryByQQNumber(ctx context.Context, qqNumber int64) ([]da
 	return []database.Model{}, nil
 }
 
+func (db *JDDatabase) QueryByWBNumber(ctx context.Context, wbNumber int64) ([]database.Model, error) {
+	return []database.Model{}, nil
+}
+
 func (db *JDDatabase) QueryByEmail(ctx context.Context, email string) ([]database.Model, error) {
 	models, err := db.Client.JDModel.
 		Query().
@@ -80,6 +84,10 @@ func (model *JDModel) GetEmail() (email string, valid bool) {
 }
 
 func (model *JDModel) GetQQNumber() (qqNumber int64, valid bool) {
+	return 0, false
+}
+
+func (model *JDModel) GetWBNumber() (wbNumber int64, valid bool) {
 	return 0, false
 }
 

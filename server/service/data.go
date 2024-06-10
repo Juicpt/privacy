@@ -16,6 +16,7 @@ var (
 	_ Data = PhoneNumber(0)
 	_ Data = IDNumber("")
 	_ Data = QQNumber(0)
+	_ Data = WBNumber(0)
 	_ Data = Password("")
 	_ Data = Email("")
 	_ Data = Address("")
@@ -27,6 +28,7 @@ type (
 	PhoneNumber int64
 	IDNumber    string
 	QQNumber    int64
+	WBNumber    int64
 	Password    string
 	Email       string
 	Address     string
@@ -62,6 +64,14 @@ func (qqNumber QQNumber) Masking() string {
 
 func (qqNumber QQNumber) String() string {
 	return strconv.Itoa(int(qqNumber))
+}
+
+func (wbNumber WBNumber) Masking() string {
+	return maskLeft(wbNumber.String(), 3)
+}
+
+func (wbNumber WBNumber) String() string {
+	return strconv.Itoa(int(wbNumber))
 }
 
 func (idNumber IDNumber) Masking() string {
@@ -127,6 +137,9 @@ func whatType(value string) (result []interface{}) {
 		}
 		if number <= 99999999999 && len(strconv.Itoa(int(number))) >= 5 {
 			result = append(result, QQNumber(number))
+		}
+		if len(strconv.Itoa(int(number))) == 10 {
+		    result = append(result, WBNumber(number))
 		}
 	}
 	if len(value) == 18 {

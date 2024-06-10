@@ -11,6 +11,7 @@ import (
 	"github.com/kallydev/privacy/ent/predicate"
 	"github.com/kallydev/privacy/ent/qqmodel"
 	"github.com/kallydev/privacy/ent/sfmodel"
+	"github.com/kallydev/privacy/ent/wbmodel"
 
 	"github.com/facebook/ent"
 )
@@ -27,6 +28,7 @@ const (
 	TypeJDModel = "JDModel"
 	TypeQQModel = "QQModel"
 	TypeSFModel = "SFModel"
+	TypeWBModel = "WBModel"
 )
 
 // JDModelMutation represents an operation that mutate the JDModels
@@ -1490,4 +1492,422 @@ func (m *SFModelMutation) ClearEdge(name string) error {
 // defined in the schema.
 func (m *SFModelMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown SFModel edge %s", name)
+}
+
+// WBModelMutation represents an operation that mutate the WBModels
+// nodes in the graph.
+type WBModelMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *int
+	uid       *int64
+	add_uid    *int64
+	phone_number    *int64
+	addphone_number *int64
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*WBModel, error)
+	predicates      []predicate.WBModel
+}
+
+var _ ent.Mutation = (*WBModelMutation)(nil)
+
+// wbmodelOption allows to manage the mutation configuration using functional options.
+type wbmodelOption func(*WBModelMutation)
+
+// newWBModelMutation creates new mutation for $n.Name.
+func newWBModelMutation(c config, op Op, opts ...wbmodelOption) *WBModelMutation {
+	m := &WBModelMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeWBModel,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withWBModelID sets the id field of the mutation.
+func withWBModelID(id int) wbmodelOption {
+	return func(m *WBModelMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *WBModel
+		)
+		m.oldValue = func(ctx context.Context) (*WBModel, error) {
+			once.Do(func() {
+				if m.done {
+					err = fmt.Errorf("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().WBModel.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withWBModel sets the old WBModel of the mutation.
+func withWBModel(node *WBModel) wbmodelOption {
+	return func(m *WBModelMutation) {
+		m.oldValue = func(context.Context) (*WBModel, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m WBModelMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m WBModelMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the id value in the mutation. Note that, the id
+// is available only if it was provided to the builder.
+func (m *WBModelMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// SetWbNumber sets the uid field.
+func (m *WBModelMutation) SetWbNumber(i int64) {
+	m.uid = &i
+	m.add_uid = nil
+}
+
+// WbNumber returns the uid value in the mutation.
+func (m *WBModelMutation) WbNumber() (r int64, exists bool) {
+	v := m.uid
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWbNumber returns the old uid value of the WBModel.
+// If the WBModel object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *WBModelMutation) OldWbNumber(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldWbNumber is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldWbNumber requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWbNumber: %w", err)
+	}
+	return oldValue.WbNumber, nil
+}
+
+// AddWbNumber adds i to uid.
+func (m *WBModelMutation) AddWbNumber(i int64) {
+	if m.add_uid != nil {
+		*m.add_uid += i
+	} else {
+		m.add_uid = &i
+	}
+}
+
+// AddedWbNumber returns the value that was added to the uid field in this mutation.
+func (m *WBModelMutation) AddedWbNumber() (r int64, exists bool) {
+	v := m.add_uid
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetWbNumber reset all changes of the "uid" field.
+func (m *WBModelMutation) ResetWbNumber() {
+	m.uid = nil
+	m.add_uid = nil
+}
+
+// SetPhoneNumber sets the phone_number field.
+func (m *WBModelMutation) SetPhoneNumber(i int64) {
+	m.phone_number = &i
+	m.addphone_number = nil
+}
+
+// PhoneNumber returns the phone_number value in the mutation.
+func (m *WBModelMutation) PhoneNumber() (r int64, exists bool) {
+	v := m.phone_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPhoneNumber returns the old phone_number value of the WBModel.
+// If the WBModel object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *WBModelMutation) OldPhoneNumber(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldPhoneNumber is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldPhoneNumber requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPhoneNumber: %w", err)
+	}
+	return oldValue.PhoneNumber, nil
+}
+
+// AddPhoneNumber adds i to phone_number.
+func (m *WBModelMutation) AddPhoneNumber(i int64) {
+	if m.addphone_number != nil {
+		*m.addphone_number += i
+	} else {
+		m.addphone_number = &i
+	}
+}
+
+// AddedPhoneNumber returns the value that was added to the phone_number field in this mutation.
+func (m *WBModelMutation) AddedPhoneNumber() (r int64, exists bool) {
+	v := m.addphone_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPhoneNumber reset all changes of the "phone_number" field.
+func (m *WBModelMutation) ResetPhoneNumber() {
+	m.phone_number = nil
+	m.addphone_number = nil
+}
+
+// Op returns the operation name.
+func (m *WBModelMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (WBModel).
+func (m *WBModelMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during
+// this mutation. Note that, in order to get all numeric
+// fields that were in/decremented, call AddedFields().
+func (m *WBModelMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.uid != nil {
+		fields = append(fields, wbmodel.FieldWbNumber)
+	}
+	if m.phone_number != nil {
+		fields = append(fields, wbmodel.FieldPhoneNumber)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name.
+// The second boolean value indicates that this field was
+// not set, or was not define in the schema.
+func (m *WBModelMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case wbmodel.FieldWbNumber:
+		return m.WbNumber()
+	case wbmodel.FieldPhoneNumber:
+		return m.PhoneNumber()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database.
+// An error is returned if the mutation operation is not UpdateOne,
+// or the query to the database was failed.
+func (m *WBModelMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case wbmodel.FieldWbNumber:
+		return m.OldWbNumber(ctx)
+	case wbmodel.FieldPhoneNumber:
+		return m.OldPhoneNumber(ctx)
+	}
+	return nil, fmt.Errorf("unknown WBModel field %s", name)
+}
+
+// SetField sets the value for the given name. It returns an
+// error if the field is not defined in the schema, or if the
+// type mismatch the field type.
+func (m *WBModelMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case wbmodel.FieldWbNumber:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWbNumber(v)
+		return nil
+	case wbmodel.FieldPhoneNumber:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPhoneNumber(v)
+		return nil
+	}
+	return fmt.Errorf("unknown WBModel field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented
+// or decremented during this mutation.
+func (m *WBModelMutation) AddedFields() []string {
+	var fields []string
+	if m.add_uid != nil {
+		fields = append(fields, wbmodel.FieldWbNumber)
+	}
+	if m.addphone_number != nil {
+		fields = append(fields, wbmodel.FieldPhoneNumber)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was in/decremented
+// from a field with the given name. The second value indicates
+// that this field was not set, or was not define in the schema.
+func (m *WBModelMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case wbmodel.FieldWbNumber:
+		return m.AddedWbNumber()
+	case wbmodel.FieldPhoneNumber:
+		return m.AddedPhoneNumber()
+	}
+	return nil, false
+}
+
+// AddField adds the value for the given name. It returns an
+// error if the field is not defined in the schema, or if the
+// type mismatch the field type.
+func (m *WBModelMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case wbmodel.FieldWbNumber:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddWbNumber(v)
+		return nil
+	case wbmodel.FieldPhoneNumber:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPhoneNumber(v)
+		return nil
+	}
+	return fmt.Errorf("unknown WBModel numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared
+// during this mutation.
+func (m *WBModelMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicates if this field was
+// cleared in this mutation.
+func (m *WBModelMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value for the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *WBModelMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown WBModel nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation regarding the
+// given field name. It returns an error if the field is not
+// defined in the schema.
+func (m *WBModelMutation) ResetField(name string) error {
+	switch name {
+	case wbmodel.FieldWbNumber:
+		m.ResetWbNumber()
+		return nil
+	case wbmodel.FieldPhoneNumber:
+		m.ResetPhoneNumber()
+		return nil
+	}
+	return fmt.Errorf("unknown WBModel field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this
+// mutation.
+func (m *WBModelMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all ids (to other nodes) that were added for
+// the given edge name.
+func (m *WBModelMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this
+// mutation.
+func (m *WBModelMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all ids (to other nodes) that were removed for
+// the given edge name.
+func (m *WBModelMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this
+// mutation.
+func (m *WBModelMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean indicates if this edge was
+// cleared in this mutation.
+func (m *WBModelMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value for the given name. It returns an
+// error if the edge name is not defined in the schema.
+func (m *WBModelMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown WBModel unique edge %s", name)
+}
+
+// ResetEdge resets all changes in the mutation regarding the
+// given edge name. It returns an error if the edge is not
+// defined in the schema.
+func (m *WBModelMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown WBModel edge %s", name)
 }

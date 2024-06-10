@@ -22,6 +22,7 @@ type TablesConfig struct {
 	QQ bool `yaml:"qq"`
 	JD bool `yaml:"jd"`
 	SF bool `yaml:"sf"`
+	WB bool `yaml:"wb"`
 }
 
 type HttpConfig struct {

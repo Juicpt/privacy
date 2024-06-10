@@ -18,6 +18,9 @@ type Tx struct {
 	QQModel *QQModelClient
 	// SFModel is the client for interacting with the SFModel builders.
 	SFModel *SFModelClient
+	
+	// WBModel is the client for interacting with the WBModel builders.
+	WBModel *WBModelClient
 
 	// lazily loaded.
 	client     *Client
@@ -156,6 +159,7 @@ func (tx *Tx) init() {
 	tx.JDModel = NewJDModelClient(tx.config)
 	tx.QQModel = NewQQModelClient(tx.config)
 	tx.SFModel = NewSFModelClient(tx.config)
+	tx.WBModel = NewWBModelClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

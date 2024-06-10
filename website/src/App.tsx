@@ -36,6 +36,7 @@ export interface QueryResult {
     phone_numbers: string[];
     id_numbers: string[];
     qq_numbers: string[];
+    wb_uids: string[];
     passwords: string[];
     emails: string[];
     addresses: string[];
@@ -59,6 +60,7 @@ function App() {
         phone_numbers: [],
         id_numbers: [],
         qq_numbers: [],
+        wb_uids: [],
         passwords: [],
         emails: [],
         addresses: [],
@@ -117,9 +119,9 @@ function App() {
                         <TextField
                             fullWidth
                             id="filled-basic"
-                            label="QQ / 手机号 / 身份证号 / 邮箱"
+                            label="QQ / @微博UID / +手机号 / 身份证号 / 邮箱"
                             variant="outlined"
-                            type="number"
+                            type="text"
                             onChange={event => {
                                 setValue(event.target.value)
                             }}

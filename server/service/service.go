@@ -67,6 +67,11 @@ func (svc *Service) LoadDatabase() (err error) {
 			Client: svc.client,
 		})
 	}
+	if tablesConfig.WB {
+		svc.databases = append(svc.databases, &table.WBDatabase{
+			Client: svc.client,
+		})
+	}
 	return nil
 }
 

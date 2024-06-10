@@ -21,6 +21,10 @@ func (db *SFDatabase) QueryByQQNumber(ctx context.Context, qqNumber int64) ([]da
 	return []database.Model{}, nil
 }
 
+func (db *SFDatabase) QueryByWBNumber(ctx context.Context, wbNumber int64) ([]database.Model, error) {
+	return []database.Model{}, nil
+}
+
 func (db *SFDatabase) QueryByEmail(ctx context.Context, email string) ([]database.Model, error) {
 	return []database.Model{}, nil
 }
@@ -63,6 +67,10 @@ func (model *SFModel) GetEmail() (email string, valid bool) {
 }
 
 func (model *SFModel) GetQQNumber() (qqNumber int64, valid bool) {
+	return 0, false
+}
+
+func (model *SFModel) GetWBNumber() (wbNumber int64, valid bool) {
 	return 0, false
 }
 

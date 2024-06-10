@@ -28,6 +28,10 @@ func (db *QQDatabase) QueryByQQNumber(ctx context.Context, qqNumber int64) ([]da
 	return entModelsToQQModels(models), nil
 }
 
+func (db *QQDatabase) QueryByWBNumber(ctx context.Context, wbNumber int64) ([]database.Model, error) {
+	return []database.Model{}, nil
+}
+
 func (db *QQDatabase) QueryByEmail(ctx context.Context, email string) ([]database.Model, error) {
 	return []database.Model{}, nil
 }
@@ -70,6 +74,10 @@ func (model *QQModel) GetEmail() (email string, valid bool) {
 
 func (model *QQModel) GetQQNumber() (qqNumber int64, valid bool) {
 	return model.QQNumber.Int64, model.QQNumber.Valid
+}
+
+func (model *QQModel) GetWBNumber() (wbNumber int64, valid bool) {
+	return 0, false
 }
 
 func (model *QQModel) GetIDNumber() (idNumber string, valid bool) {
